@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FPS Training PRO 3D</title>
+  <title>FPS Training PRO 3D - Maze Edition</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
@@ -13,60 +13,56 @@
 
 <!-- HUD Overlay -->
 <div id="hud">
-  <div id="map-tag">Map: <span id="current-map-name">Cyber Neon</span></div>
+  <div id="map-tag">Map: <span id="current-map-name">Cyber Maze</span></div>
   
   <div id="stats">
     <div><b id="kills">0</b><span class="stat-label">Kills</span></div>
-    <div><b id="time">01:30</b><span class="stat-label">Thời Gian</span></div>
-    <div><b id="acc">100%</b><span class="stat-label">Độ Chính Xác</span></div>
+    <div><b id="acc">100%</b><span class="stat-label">Chính Xác</span></div>
     <div><b id="score">0</b><span class="stat-label">Điểm Số</span></div>
   </div>
 
-  <div id="recoil-ring"></div>
   <div id="crosshair">
     <div class="ch-line v top"></div><div class="ch-line v bot"></div>
     <div class="ch-line h lft"></div><div class="ch-line h rgt"></div>
     <div class="dot"></div>
   </div>
-  <div id="hitmark"><div class="v"></div><div class="h"></div></div>
 
-  <div id="stance-indicator">TƯ THẾ: ĐỨNG (WASD: Di chuyển | Ctrl: Núp | Shift: Chạy)</div>
+  <div id="stance-indicator">Phím: WASD (Đi) | C (Ngồi) | Ctrl (Khóa/Mở Chuột) | X (Kết thúc & Phân tích)</div>
 
   <div id="weapon-info">
     <div id="weapon-name">M4A1 RIFLE</div>
-    <div id="ammo-display">30 / <span id="reserve">120</span><small>TỰ ĐỘNG</small></div>
+    <div id="ammo-display">30 / <span id="reserve">120</span></div>
   </div>
 </div>
 
 <!-- Start Menu -->
 <div id="start-modal" class="overlay-panel">
   <div class="menu-box">
-    <h1 class="title">FPS <span>TRAINING PRO</span></h1>
-    <p class="subtitle">BẢN ĐỒ RỘNG LỚN & HỆ THỐNG VẬT THỂ NÚP TÁC CHIẾN</p>
+    <h1 class="title">FPS <span>MAZE TACTICAL</span></h1>
+    <p class="subtitle">BẢN ĐỒ MÊ CUNG - MỤC TIÊU SPAWN VÀ TẤN CÔNG BẤT NGỜ</p>
     
-    <button id="btn-play" class="btn">▶ BẮT ĐẦU TRẬN ĐẤU</button>
-    <button id="btn-select-map" class="btn btn-secondary">🗺️ CHỌN MAP: CYBER NEON</button>
-    <button id="btn-select-mode" class="btn btn-secondary">🎯 CHẾ ĐỘ: TĨNH</button>
+    <button id="btn-play" class="btn">▶ BẮT ĐẦU VÀO MÊ CUNG</button>
   </div>
 </div>
 
-<!-- Game Over Results -->
-<div id="result-modal" class="overlay-panel" style="display: none; z-index: 40;">
+<!-- Analyze / Results Modal -->
+<div id="result-modal" class="overlay-panel" style="display: none;">
   <div class="menu-box">
-    <h1 class="title">KẾT <span>QUẢ</span></h1>
+    <h1 class="title">BẢNG <span>PHÂN TÍCH (ANALYTICS)</span></h1>
     <div id="grade">S</div>
     
     <div class="stats-summary">
       <div><span>Tổng Điểm:</span><b id="res-score">0</b></div>
-      <div><span>Số Kills:</span><b id="res-kills">0</b></div>
-      <div><span>Độ Chính Xác:</span><b id="res-acc">0%</b></div>
+      <div><span>Số Drones Tiêu Diệt:</span><b id="res-kills">0</b></div>
+      <div><span>Tỷ Lệ Chính Xác:</span><b id="res-acc">0%</b></div>
+      <div><span>Số Phát Trúng Đầu (Headshots):</span><b id="res-headshots">0</b></div>
     </div>
 
-    <button id="btn-play-again" class="btn">CHƠI LẠI VÒNG MỚI</button>
+    <button id="btn-play-again" class="btn">RESTART MAP MỚI</button>
   </div>
 </div>
 
-<!-- Load Scripts theo đúng thứ tự phụ thuộc -->
+<!-- Load Scripts -->
 <script src="js/AudioEngine.js"></script>
 <script src="js/maps/CyberNeonMap.js"></script>
 <script src="js/maps/DesertOutpostMap.js"></script>
