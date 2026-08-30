@@ -1,6 +1,8 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #08080c; font-family: 'Segoe UI', system-ui, sans-serif; color: #fff; user-select: none; }
 #game-canvas { display: block; width: 100vw; height: 100vh; }
+
+/* Tránh HUD cản trở click chuột */
 #hud { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
 
 #stats { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); display: flex; background: rgba(15, 20, 28, 0.85); border: 1px solid rgba(255, 152, 0, 0.3); border-radius: 12px; padding: 10px 24px; gap: 32px; text-align: center; backdrop-filter: blur(10px); }
@@ -14,12 +16,6 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 #crosshair .top { top: 0; } #crosshair .bot { bottom: 0; } #crosshair .lft { left: 0; } #crosshair .rgt { right: 0; }
 #crosshair .dot { position: absolute; left: 12px; top: 12px; width: 4px; height: 4px; border-radius: 50%; background: #ff9800; }
 
-#recoil-ring { position: absolute; left: 50%; top: 50%; width: 28px; height: 28px; transform: translate(-50%, -50%); border: 2px solid rgba(255, 82, 82, 0.6); border-radius: 50%; opacity: 0; pointer-events: none; }
-
-#hitmark { position: absolute; left: 50%; top: 50%; width: 32px; height: 32px; transform: translate(-50%, -50%) rotate(45deg) scale(0); opacity: 0; pointer-events: none; }
-#hitmark div { position: absolute; background: #fff; }
-#hitmark .v { width: 3px; height: 32px; left: 14.5px; } #hitmark .h { height: 3px; width: 32px; top: 14.5px; }
-
 #weapon-info { position: absolute; right: 30px; bottom: 30px; text-align: right; }
 #ammo-display { font-size: 38px; font-weight: 900; }
 #ammo-display small { font-size: 14px; color: #a0acba; display: block; }
@@ -28,16 +24,18 @@ html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
 #stance-indicator { position: absolute; left: 30px; bottom: 30px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 800; color: #00e5ff; }
 #map-tag { position: absolute; left: 30px; top: 30px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 700; color: #00e5ff; }
 
-.overlay-panel { position: fixed; inset: 0; background: rgba(6, 9, 14, 0.85); backdrop-filter: blur(12px); z-index: 10; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-.menu-box { width: 480px; max-width: 90vw; background: rgba(18, 24, 36, 0.95); border: 1px solid rgba(255, 152, 0, 0.25); border-radius: 16px; padding: 32px; }
+/* Đảm bảo Menu nhận sự kiện click */
+.overlay-panel { position: fixed; inset: 0; background: rgba(6, 9, 14, 0.88); backdrop-filter: blur(12px); z-index: 100; display: flex; align-items: center; justify-content: center; flex-direction: column; pointer-events: auto !important; }
+.menu-box { width: 500px; max-width: 90vw; background: rgba(18, 24, 36, 0.95); border: 1px solid rgba(255, 152, 0, 0.3); border-radius: 16px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 h1.title { font-size: 36px; font-weight: 900; margin: 0 0 4px; text-align: center; }
 h1.title span { color: #ff9800; }
 p.subtitle { color: #7e8b9b; text-align: center; margin: 0 0 24px; font-size: 13px; }
 
-.btn { display: block; width: 100%; padding: 14px; margin: 10px 0; border: none; border-radius: 8px; background: #1a2332; color: #e1e7ed; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
-.btn:hover, .btn.active { background: #ff9800; color: #000; }
-.btn-secondary { background: rgba(255,255,255,0.06); color: #ccc; }
+.btn { display: block; width: 100%; padding: 14px; margin: 10px 0; border: none; border-radius: 8px; background: #ff9800; color: #000; font-size: 15px; font-weight: 800; cursor: pointer; transition: all 0.2s; text-align: center; }
+.btn:hover { background: #ffb74d; transform: translateY(-2px); }
+.btn-secondary { background: rgba(255,255,255,0.08); color: #ccc; }
+.btn-secondary:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
-#grade { font-size: 72px; font-weight: 900; color: #ff9800; text-align: center; }
-.stats-summary { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 16px; margin: 16px 0; }
-.stats-summary div { display: flex; justify-content: space-between; }
+#grade { font-size: 72px; font-weight: 900; color: #ff9800; text-align: center; margin: 10px 0; }
+.stats-summary { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 16px; margin: 16px 0; display: flex; flex-direction: column; gap: 8px; }
+.stats-summary div { display: flex; justify-content: space-between; font-size: 14px; }
