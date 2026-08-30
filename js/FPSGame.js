@@ -8,6 +8,7 @@ class FPSGame {
     this.mapManager = new MapManager(this.scene);
     this.droneManager = new EnemyDroneManager(this.scene);
     
+    this.selectedMapKey = 'cyber'; // Mặc định map cyber
     this.playing = false;
     this.paused = false;
     this.isCrouching = false;
@@ -24,7 +25,7 @@ class FPSGame {
     this.keys = {};
 
     this.bindEvents();
-    this.mapManager.loadMap('cyber');
+    this.mapManager.loadMap(this.selectedMapKey);
     this.animate();
   }
 
@@ -44,7 +45,9 @@ class FPSGame {
     this.score = 0; this.kills = 0; this.shots = 0; this.hits = 0; this.headshots = 0;
     this.playerPos.set(0, 1.7, 0);
 
+    this.mapManager.loadMap(this.selectedMapKey);
     this.droneManager.clear();
+    
     for (let i = 0; i < 8; i++) this.droneManager.spawn(this.playerPos);
 
     document.getElementById('start-modal').style.display = 'none';
@@ -54,7 +57,6 @@ class FPSGame {
     this.updateHUD();
   }
 
-  // Phím X: Kết thúc trận đấu & Hiện Bảng Phân Tích
   endAndAnalyze() {
     this.playing = false;
     document.exitPointerLock();
@@ -64,7 +66,6 @@ class FPSGame {
     document.getElementById('res-acc').textContent = (this.shots ? Math.round(this.hits / this.shots * 100) : 100) + '%';
     document.getElementById('res-headshots').textContent = this.headshots;
 
-    // Tính điểm Xếp hạng Grade
     let grade = 'C';
     if (this.score > 2000) grade = 'S';
     else if (this.score > 1000) grade = 'A';
@@ -105,7 +106,6 @@ class FPSGame {
       if (dEntry) {
         dEntry.alive = false;
         this.scene.remove(parentGroup);
-        // Spawn quái mới áp sát bất ngờ
         this.droneManager.spawn(this.playerPos);
       }
     }
@@ -135,7 +135,6 @@ class FPSGame {
     moveVector.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw);
     this.playerPos.addScaledVector(moveVector, moveSpeed * dt);
 
-    // Hạ thấp tầm mắt khi bấm 'C' (Ngồi)
     const targetEyeHeight = this.isCrouching ? 0.9 : 1.7;
     this.playerPos.y += (targetEyeHeight - this.playerPos.y) * dt * 10.0;
 
@@ -159,12 +158,10 @@ class FPSGame {
       const k = e.key.toLowerCase();
       this.keys[k] = true;
 
-      if (k === 'c') {
-        this.isCrouching = true; // Phím C: Ngồi/Núp
-      }
+      if (k === 'c') this.isCrouching = true; // Phím C Ngồi
       
       if (e.key === 'Control') {
-        // Phím Ctrl: Tắt / Bật khóa chuột PointerLock
+        // Ctrl bật/tắt PointerLock
         if (document.pointerLockElement === this.canvas) {
           document.exitPointerLock();
         } else if (this.playing) {
@@ -172,14 +169,8 @@ class FPSGame {
         }
       }
 
-      if (k === 'x' && this.playing) {
-        this.endAndAnalyze(); // Phím X: Kết thúc & Phân tích
-      }
-
-      if (k === 'r' && this.playing) {
-        this.ammo = this.weapon.ammoMax;
-        this.updateHUD();
-      }
+      if (k === 'x' && this.playing) this.endAndAnalyze(); // Phím X Kết thúc & Phân tích
+      if (k === 'r' && this.playing) { this.ammo = this.weapon.ammoMax; this.updateHUD(); }
     });
 
     document.addEventListener('keyup', (e) => {
@@ -188,9 +179,22 @@ class FPSGame {
       if (k === 'c') this.isCrouching = false;
     });
 
-    // Bắt sự kiện Click nút UI chính xác 100%
+    // Chọn Map trong Menu
+    document.querySelectorAll('.map-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.map-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        this.selectedMapKey = card.getAttribute('data-map');
+      });
+    });
+
+    // Buttons UI
     document.getElementById('btn-play').addEventListener('click', () => this.start());
     document.getElementById('btn-play-again').addEventListener('click', () => this.start());
+    document.getElementById('btn-menu').addEventListener('click', () => {
+      document.getElementById('result-modal').style.display = 'none';
+      document.getElementById('start-modal').style.display = 'flex';
+    });
   }
 
   animate() {
