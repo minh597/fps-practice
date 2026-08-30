@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FPS Training PRO 3D - Maze Edition</title>
+  <title>FPS Training PRO 3D - Multi-Map Edition</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
@@ -13,7 +13,7 @@
 
 <!-- HUD Overlay -->
 <div id="hud">
-  <div id="map-tag">Map: <span id="current-map-name">Cyber Maze</span></div>
+  <div id="map-tag">Map: <span id="current-map-name">Cyber Neon Maze</span></div>
   
   <div id="stats">
     <div><b id="kills">0</b><span class="stat-label">Kills</span></div>
@@ -27,7 +27,7 @@
     <div class="dot"></div>
   </div>
 
-  <div id="stance-indicator">Phím: WASD (Đi) | C (Ngồi) | Ctrl (Khóa/Mở Chuột) | X (Kết thúc & Phân tích)</div>
+  <div id="stance-indicator">WASD (Đi) | C (Ngồi/Núp) | Ctrl (Khóa/Mở Chuột) | X (Kết thúc trận)</div>
 
   <div id="weapon-info">
     <div id="weapon-name">M4A1 RIFLE</div>
@@ -35,17 +35,36 @@
   </div>
 </div>
 
-<!-- Start Menu -->
+<!-- Start Menu & Chọn Map -->
 <div id="start-modal" class="overlay-panel">
   <div class="menu-box">
-    <h1 class="title">FPS <span>MAZE TACTICAL</span></h1>
-    <p class="subtitle">BẢN ĐỒ MÊ CUNG - MỤC TIÊU SPAWN VÀ TẤN CÔNG BẤT NGỜ</p>
+    <h1 class="title">FPS <span>TACTICAL ARENA</span></h1>
+    <p class="subtitle">CHỌN BẢN ĐỒ VÀ BẮT ĐẦU HUẤN LUYỆN</p>
     
-    <button id="btn-play" class="btn">▶ BẮT ĐẦU VÀO MÊ CUNG</button>
+    <div class="map-grid">
+      <div class="map-card active" data-map="cyber">
+        <h4>1. Cyber Neon Maze</h4>
+        <p>Mê cung hẹp, hành lang 90 độ, AI spawn bất ngờ.</p>
+      </div>
+      <div class="map-card" data-map="desert">
+        <h4>2. Desert Outpost</h4>
+        <p>Căn cứ sa mạc, chiến đấu tầm trung đến xa.</p>
+      </div>
+      <div class="map-card" data-map="space">
+        <h4>3. Deep Space Base</h4>
+        <p>Trạm vũ trụ ánh sáng cực hạn, góc di chuyển hẹp.</p>
+      </div>
+      <div class="map-card" data-map="warehouse">
+        <h4>4. Industrial Warehouse</h4>
+        <p>Nhà kho công nghiệp chứa đầy thùng hàng che tầm nhìn.</p>
+      </div>
+    </div>
+
+    <button id="btn-play" class="btn">▶ BẮT ĐẦU TRẬN ĐẤU</button>
   </div>
 </div>
 
-<!-- Analyze / Results Modal -->
+<!-- Results / Analyze Modal -->
 <div id="result-modal" class="overlay-panel" style="display: none;">
   <div class="menu-box">
     <h1 class="title">BẢNG <span>PHÂN TÍCH (ANALYTICS)</span></h1>
@@ -58,11 +77,11 @@
       <div><span>Số Phát Trúng Đầu (Headshots):</span><b id="res-headshots">0</b></div>
     </div>
 
-    <button id="btn-play-again" class="btn">RESTART MAP MỚI</button>
+    <button id="btn-menu" class="btn btn-secondary">VỀ MENU CHỌN MAP</button>
+    <button id="btn-play-again" class="btn">CHƠI LẠI MAP NÀY</button>
   </div>
 </div>
 
-<!-- Load Scripts -->
 <script src="js/AudioEngine.js"></script>
 <script src="js/maps/CyberNeonMap.js"></script>
 <script src="js/maps/DesertOutpostMap.js"></script>
