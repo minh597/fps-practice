@@ -1,42 +1,43 @@
 class CyberNeonMap {
   static build(scene, mapObjects) {
-    scene.background = new THREE.Color(0x050811);
-    scene.fog = new THREE.FogExp2(0x050811, 0.008);
+    scene.background = new THREE.Color(0x04060a);
+    scene.fog = new THREE.FogExp2(0x04060a, 0.025); // Sương mù dày để giấu góc mê cung
 
+    // Sàn nhà
     const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(200, 200),
-      new THREE.MeshStandardMaterial({ color: 0x0a101d, roughness: 0.3 })
+      new THREE.PlaneGeometry(120, 120),
+      new THREE.MeshStandardMaterial({ color: 0x0a0f1d, roughness: 0.4 })
     );
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor); mapObjects.push(floor);
 
-    const grid = new THREE.GridHelper(200, 50, 0x00e5ff, 0x142032);
+    const grid = new THREE.GridHelper(120, 40, 0x00e5ff, 0x142032);
     grid.position.y = 0.01;
     scene.add(grid); mapObjects.push(grid);
 
-    const amb = new THREE.AmbientLight(0xffffff, 0.5);
+    const amb = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(amb); mapObjects.push(amb);
 
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x121d30 });
-    const coverMat = new THREE.MeshStandardMaterial({ color: 0x1c2b45, emissive: 0x00e5ff, emissiveIntensity: 0.1 });
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0x101a2d, roughness: 0.2 });
 
-    const createWall = (x, y, z, w, h, d, mat) => {
-      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-      mesh.position.set(x, y + h / 2, z);
+    const createWall = (x, z, w, d) => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, 8, d), wallMat);
+      mesh.position.set(x, 4, z);
       scene.add(mesh);
       mapObjects.push(mesh);
     };
 
-    createWall(0, 0, -100, 200, 15, 4, wallMat);
-    createWall(0, 0, 100, 200, 15, 4, wallMat);
-    createWall(-100, 0, 0, 4, 15, 200, wallMat);
-    createWall(100, 0, 0, 4, 15, 200, wallMat);
+    // Khung mê cung bao bên ngoài
+    createWall(0, -60, 120, 4); createWall(0, 60, 120, 4);
+    createWall(-60, 0, 4, 120); createWall(60, 0, 4, 120);
 
-    for (let i = -60; i <= 60; i += 30) {
-      for (let j = -60; j <= 60; j += 30) {
-        if (i === 0 && j === 0) continue;
-        createWall(i, 0, j, 12, 3.5, 1.5, coverMat);
-      }
-    }
+    // Thuật toán dựng các vách tường hành lang Mê Cung
+    const mazeLayout = [
+      [-30, -30, 40, 4], [-10, -10, 4, 40], [20, -40, 4, 30],
+      [30, 10, 30, 4], [-40, 20, 4, 40], [10, 30, 40, 4],
+      [-20, 40, 30, 4], [40, -20, 4, 30]
+    ];
+
+    mazeLayout.forEach(w => createWall(w[0], w[1], w[2], w[3]));
   }
 }
