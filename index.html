@@ -3,171 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FPS Training PRO 3D - Multi Map Edition</title>
-  <!-- Main Stylesheet -->
+  <title>FPS Training PRO 3D</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Three.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-  <!-- Game Canvas Scene -->
-  <canvas id="game-canvas"></canvas>
+<canvas id="game-canvas"></canvas>
 
-  <!-- HUD Overlay -->
-  <div id="hud">
-    <div id="map-tag">Map: <span id="current-map-name">Cyber Neon Vault</span></div>
+<!-- HUD Overlay -->
+<div id="hud">
+  <div id="map-tag">Map: <span id="current-map-name">Cyber Neon</span></div>
+  
+  <div id="stats">
+    <div><b id="kills">0</b><span class="stat-label">Kills</span></div>
+    <div><b id="time">01:30</b><span class="stat-label">Thời Gian</span></div>
+    <div><b id="acc">100%</b><span class="stat-label">Độ Chính Xác</span></div>
+    <div><b id="score">0</b><span class="stat-label">Điểm Số</span></div>
+  </div>
+
+  <div id="recoil-ring"></div>
+  <div id="crosshair">
+    <div class="ch-line v top"></div><div class="ch-line v bot"></div>
+    <div class="ch-line h lft"></div><div class="ch-line h rgt"></div>
+    <div class="dot"></div>
+  </div>
+  <div id="hitmark"><div class="v"></div><div class="h"></div></div>
+
+  <div id="stance-indicator">TƯ THẾ: ĐỨNG (WASD: Di chuyển | Ctrl: Núp | Shift: Chạy)</div>
+
+  <div id="weapon-info">
+    <div id="weapon-name">M4A1 RIFLE</div>
+    <div id="ammo-display">30 / <span id="reserve">120</span><small>TỰ ĐỘNG</small></div>
+  </div>
+</div>
+
+<!-- Start Menu -->
+<div id="start-modal" class="overlay-panel">
+  <div class="menu-box">
+    <h1 class="title">FPS <span>TRAINING PRO</span></h1>
+    <p class="subtitle">BẢN ĐỒ RỘNG LỚN & HỆ THỐNG VẬT THỂ NÚP TÁC CHIẾN</p>
     
-    <div id="stats">
-      <div><b id="kills">0</b><span class="stat-label">Kills</span></div>
-      <div><b id="time">01:00</b><span class="stat-label">Thời Gian</span></div>
-      <div><b id="acc">100%</b><span class="stat-label">Độ Chính Xác</span></div>
-      <div><b id="score">0</b><span class="stat-label">Điểm Số</span></div>
-    </div>
-
-    <div id="announcer">DOUBLE KILL!</div>
-    <div id="combo">COMBO x2</div>
-
-    <div id="recoil-ring"></div>
-    <div id="crosshair">
-      <div class="ch-line v top"></div><div class="ch-line v bot"></div>
-      <div class="ch-line h lft"></div><div class="ch-line h rgt"></div>
-      <div class="dot"></div>
-    </div>
-    <div id="hitmark"><div class="v"></div><div class="h"></div></div>
-
-    <div id="buff-bar"></div>
-
-    <div id="weapon-info">
-      <div id="weapon-name">M4A1 RIFLE</div>
-      <div id="ammo-display">30 / <span id="reserve">120</span><small>TỰ ĐỘNG</small></div>
-    </div>
-
-    <div id="lock-hint">Nhấn chuột trái để khoá góc nhìn 3D FPS</div>
+    <button id="btn-play" class="btn">▶ BẮT ĐẦU TRẬN ĐẤU</button>
+    <button id="btn-select-map" class="btn btn-secondary">🗺️ CHỌN MAP: CYBER NEON</button>
+    <button id="btn-select-mode" class="btn btn-secondary">🎯 CHẾ ĐỘ: TĨNH</button>
   </div>
+</div>
 
-  <!-- Main Start Screen Modal -->
-  <div id="start-modal" class="overlay-panel">
-    <div class="menu-box">
-      <h1 class="title">FPS <span>PRO 3D</span></h1>
-      <p class="subtitle">AIM TRAINER & COMBAT SIMULATOR</p>
-      
-      <button id="btn-play" class="btn">▶ BẮT ĐẦU VÒNG ĐẤU</button>
-      <button id="btn-select-map" class="btn btn-secondary">🗺️ CHỌN MAP: CYBER NEON</button>
-      <button id="btn-select-mode" class="btn btn-secondary">🎯 CHẾ ĐỘ: TĨNH</button>
-      <button id="btn-settings" class="btn btn-secondary">⚙️ CÀI ĐẶT & PHÍM BẤM</button>
+<!-- Game Over Results -->
+<div id="result-modal" class="overlay-panel" style="display: none; z-index: 40;">
+  <div class="menu-box">
+    <h1 class="title">KẾT <span>QUẢ</span></h1>
+    <div id="grade">S</div>
+    
+    <div class="stats-summary">
+      <div><span>Tổng Điểm:</span><b id="res-score">0</b></div>
+      <div><span>Số Kills:</span><b id="res-kills">0</b></div>
+      <div><span>Độ Chính Xác:</span><b id="res-acc">0%</b></div>
     </div>
+
+    <button id="btn-play-again" class="btn">CHƠI LẠI VÒNG MỚI</button>
   </div>
+</div>
 
-  <!-- Map Selector Modal -->
-  <div id="map-modal" class="overlay-panel" style="display:none; z-index:25;">
-    <div class="menu-box">
-      <h1 class="title">CHỌN <span>BẢN ĐỒ 3D</span></h1>
-      <p class="subtitle">MỖI MAP SẼ CÓ MÔI TRƯỜNG VÀ HIỆU ỨNG RIÊNG</p>
-      
-      <button class="btn map-opt-btn active" data-map="cyber">⚡ CYBER NEON VAULT</button>
-      <button class="btn map-opt-btn btn-secondary" data-map="desert">🏜️ DESERT OUTPOST</button>
-      <button class="btn map-opt-btn btn-secondary" data-map="space">🌌 DEEP SPACE STATION</button>
-      <button class="btn map-opt-btn btn-secondary" data-map="warehouse">🏭 WAREHOUSE TRAINING</button>
-      
-      <button id="btn-close-map" class="btn" style="margin-top:20px;">XÁC NHẬN</button>
-    </div>
-  </div>
-
-  <!-- Settings & Keybinds Modal -->
-  <div id="settings-modal" class="overlay-panel">
-    <div class="menu-box">
-      <h1 class="title">CÀI <span>ĐẶT</span></h1>
-      
-      <div class="tab-row">
-        <button class="tab-btn active" data-tab="gen">Cấu Hình Chung</button>
-        <button class="tab-btn" data-tab="keys">Phím Bấm (Keybinds)</button>
-      </div>
-
-      <!-- General Settings -->
-      <div id="tab-gen" class="tab-content active">
-        <div class="setting-row">
-          <label>Độ Nhạy Chuột (<span id="sens-val">1.0</span>)</label>
-          <input type="range" id="sens-slider" min="0.2" max="3.0" step="0.1" value="1.0">
-        </div>
-        <div class="setting-row">
-          <label>Âm Lượng Sound (<span id="vol-val">80%</span>)</label>
-          <input type="range" id="vol-slider" min="0" max="100" value="80">
-        </div>
-        <div class="setting-row">
-          <label>Góc Nhìn FOV (<span id="fov-val">75</span>)</label>
-          <input type="range" id="fov-slider" min="60" max="105" value="75">
-        </div>
-      </div>
-
-      <!-- Keybinds Tab -->
-      <div id="tab-keys" class="tab-content">
-        <div class="setting-row">
-          <label>Tải Lại Đạn (Reload)</label>
-          <button class="keybind-btn" data-action="reload">R</button>
-        </div>
-        <div class="setting-row">
-          <label>Đổi Súng 1 (M4A1)</label>
-          <button class="keybind-btn" data-action="slot1">1</button>
-        </div>
-        <div class="setting-row">
-          <label>Đổi Súng 2 (AK-47)</label>
-          <button class="keybind-btn" data-action="slot2">2</button>
-        </div>
-        <div class="setting-row">
-          <label>Đổi Súng 3 (Vector)</label>
-          <button class="keybind-btn" data-action="slot3">3</button>
-        </div>
-        <div class="setting-row">
-          <label>Đổi Súng 4 (AWP Sniper)</label>
-          <button class="keybind-btn" data-action="slot4">4</button>
-        </div>
-        <div class="setting-row">
-          <label>Đổi Súng 5 (Railgun)</label>
-          <button class="keybind-btn" data-action="slot5">5</button>
-        </div>
-      </div>
-
-      <button id="btn-close-settings" class="btn" style="margin-top: 16px;">ĐÓNG & LƯU</button>
-    </div>
-  </div>
-
-  <!-- Paused Screen -->
-  <div id="pause-modal" class="overlay-panel" style="display: none; z-index: 20;">
-    <div class="menu-box">
-      <h1 class="title">TẠM <span>DƯNG</span></h1>
-      <button id="btn-resume" class="btn">TIẾP TỤC</button>
-      <button id="btn-pause-settings" class="btn btn-secondary">CÀI ĐẶT & KEYBINDS</button>
-      <button id="btn-restart" class="btn btn-secondary">CHƠI LẠI VÒNG NÀY</button>
-    </div>
-  </div>
-
-  <!-- Game Over Results Screen -->
-  <div id="result-modal" class="overlay-panel">
-    <div class="menu-box">
-      <h1 class="title">KẾT <span>QUẢ</span></h1>
-      <div id="grade">S</div>
-      
-      <div class="stats-summary">
-        <div><span>Tổng Điểm:</span><b id="res-score">0</b></div>
-        <div><span>Số Kills:</span><b id="res-kills">0</b></div>
-        <div><span>Độ Chính Xác:</span><b id="res-acc">0%</b></div>
-        <div><span>Tỉ Lệ Headshot:</span><b id="res-hs">0%</b></div>
-        <div><span>Max Combo:</span><b id="res-combo">x0</b></div>
-      </div>
-
-      <button id="btn-play-again" class="btn">CHƠI LẠI VÒNG MỚI</button>
-    </div>
-  </div>
-
-  <!-- JavaScript Modules Included in Dependency Order -->
-  <script src="js/AudioEngine.js"></script>
-  <script src="js/maps/CyberNeonMap.js"></script>
-  <script src="js/maps/DesertOutpostMap.js"></script>
-  <script src="js/maps/DeepSpaceMap.js"></script>
-  <script src="js/maps/WarehouseMap.js"></script>
-  <script src="js/MapManager.js"></script>
-  <script src="js/EnemyDroneManager.js"></script>
-  <script src="js/FPSGame.js"></script>
+<!-- Load Scripts theo đúng thứ tự phụ thuộc -->
+<script src="js/AudioEngine.js"></script>
+<script src="js/maps/CyberNeonMap.js"></script>
+<script src="js/maps/DesertOutpostMap.js"></script>
+<script src="js/maps/DeepSpaceMap.js"></script>
+<script src="js/maps/WarehouseMap.js"></script>
+<script src="js/MapManager.js"></script>
+<script src="js/EnemyDroneManager.js"></script>
+<script src="js/FPSGame.js"></script>
 </body>
 </html>
