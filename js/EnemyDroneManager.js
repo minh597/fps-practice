@@ -4,47 +4,55 @@ class EnemyDroneManager {
     this.drones = [];
   }
 
-  spawn(mode) {
+  // Spawn ngẫu nhiên nấp sau các góc tường
+  spawn(playerPos) {
     const group = new THREE.Group();
     
     // Core (Headshot point)
-    const coreMat = new THREE.MeshStandardMaterial({ color: 0xff3300, emissive: 0xff3300, emissiveIntensity: 0.9 });
+    const coreMat = new THREE.MeshStandardMaterial({ color: 0xff1100, emissive: 0xff1100, emissiveIntensity: 1 });
     const core = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), coreMat);
     core.userData = { isHead: true };
     group.add(core);
 
-    // Ring Body
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x222a36, metalness: 0.8 });
-    const body = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.22, 8, 20), bodyMat);
+    // Thân Drone
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.9 });
+    const body = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.2, 8, 16), bodyMat);
     body.rotation.x = Math.PI / 2;
     body.userData = { isHead: false };
     group.add(body);
 
-    const dist = 15 + Math.random() * 55;
+    // Spawn cách xa người chơi từ 15m - 35m trong mê cung
     const angle = Math.random() * Math.PI * 2;
-    const height = 1.2 + Math.random() * 8;
+    const dist = 15 + Math.random() * 20;
     
-    group.position.set(Math.cos(angle) * dist, height, Math.sin(angle) * dist);
-    
+    let spawnX = playerPos.x + Math.cos(angle) * dist;
+    let spawnZ = playerPos.z + Math.sin(angle) * dist;
+
+    // Giới hạn trong bản đồ
+    spawnX = Math.max(-50, Math.min(50, spawnX));
+    spawnZ = Math.max(-50, Math.min(50, spawnZ));
+
+    group.position.set(spawnX, 1.5, spawnZ);
     this.scene.add(group);
+
     this.drones.push({
       group,
-      vx: (Math.random() - 0.5) * (mode === 2 ? 6 : 0),
-      vy: (Math.random() - 0.5) * (mode === 2 ? 3 : 0),
+      speed: 4 + Math.random() * 4, // Tốc độ áp sát
       alive: true
     });
   }
 
-  update(dt, mode) {
+  update(dt, playerPos) {
     this.drones.forEach(d => {
       if (!d.alive) return;
-      if (mode === 2) {
-        d.group.position.x += d.vx * dt;
-        d.group.position.y += d.vy * dt;
-        if (Math.abs(d.group.position.x) > 60) d.vx *= -1;
-        if (d.group.position.y < 1 || d.group.position.y > 12) d.vy *= -1;
-      }
-      d.group.rotation.y += dt * 1.5;
+      
+      // Hướng và đuổi theo vị trí người chơi bất ngờ
+      const dir = new THREE.Vector3().subVectors(playerPos, d.group.position);
+      dir.y = 0; // Giữ ở tầm nhìn ngang mặt người chơi
+      dir.normalize();
+
+      d.group.position.addScaledVector(dir, d.speed * dt);
+      d.group.rotation.y += dt * 3.0; // Xoay vòng hiệu ứng
     });
   }
 
